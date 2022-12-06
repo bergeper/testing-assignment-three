@@ -15,7 +15,7 @@ describe("Testing movieApp.ts", () => {
     cy.get("button").click();
   });
 
-  it("Should search for movie and create DIVS", () => {
+  it("Should search for movie and create divs", () => {
     cy.visit("http://localhost:1234");
     cy.get("input").type("Batman").should("have.value", "Batman");
     cy.get("#search").click();
@@ -31,18 +31,6 @@ describe("Testing movieApp.ts", () => {
 });
 
 describe("Testing movieApp with mockdata", () => {
-  it("Should show form", () => {
-    cy.visit("http://localhost:1234");
-
-    cy.get("form").should("have.id", "searchForm");
-  });
-
-  it("Should get input", () => {
-    cy.visit("http://localhost:1234");
-
-    cy.get("input").type("Batman").should("have.value", "Batman");
-  });
-
   it("Should search with value", () => {
     cy.intercept("GET", "http://omdbapi.com/*", { fixture: "movies" }).as(
       "movieAppSearch"
@@ -72,9 +60,13 @@ describe("Testing movieApp with mockdata", () => {
   });
 
   it("Should not search for a movie and show noMessage", () => {
+    cy.intercept("GET", "http://omdbapi.com/*", { fixture: "emptyMovies" }).as(
+      "movieAppSearch"
+    );
+
     cy.visit("http://localhost:1234");
 
-    cy.get("input").type("ö").should("have.value", "ö");
+    cy.get("input").type("Lörd").should("have.value", "Lörd");
 
     cy.get("button").click();
 
