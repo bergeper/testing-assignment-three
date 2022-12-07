@@ -20,7 +20,7 @@ describe("Testing movieApp with mockdata", () => {
   });
 
   it("Should search with value", () => {
-    cy.intercept("GET", "http://omdbapi.com/*", { fixture: "movies" }).as(
+    cy.intercept("GET", "http://omdbapi.com/*", { fixture: "moviesMock" }).as(
       "movieAppSearch"
     );
     cy.get("input").type("Batman").should("have.value", "Batman");
@@ -29,7 +29,7 @@ describe("Testing movieApp with mockdata", () => {
   });
 
   it("Should search for movie and create DIVS", () => {
-    cy.intercept("GET", "http://omdbapi.com/*", { fixture: "movies" }).as(
+    cy.intercept("GET", "http://omdbapi.com/*", { fixture: "moviesMock" }).as(
       "movieAppSearch"
     );
     cy.get("input").type("Batman").should("have.value", "Batman");
@@ -40,11 +40,14 @@ describe("Testing movieApp with mockdata", () => {
   });
 
   it("Should not search for a movie and show noMessage", () => {
-    cy.intercept("GET", "http://omdbapi.com/*", { fixture: "emptyMovies" }).as(
-      "movieAppSearch"
-    );
+    cy.intercept("GET", "http://omdbapi.com/*", {
+      fixture: "emptyMoviesMock",
+    }).as("movieAppSearch");
+
     cy.get("input").type("Lörd").should("have.value", "Lörd");
     cy.get("button").click();
+
+    cy.wait("@movieAppSearch").its("request.url").should("contain", "");
     cy.get("p").contains("sökresultat");
   });
 });
