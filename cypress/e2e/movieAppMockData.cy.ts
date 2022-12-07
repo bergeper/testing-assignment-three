@@ -44,10 +44,10 @@ describe("Testing movieApp with mockdata", () => {
       fixture: "emptyMoviesMock",
     }).as("movieAppSearch");
 
-    cy.get("input").type("Lörd").should("have.value", "Lörd");
+    cy.get("input").type("Lord").should("have.value", "Lord");
     cy.get("button").click();
 
-    cy.wait("@movieAppSearch").its("request.url").should("contain", "");
+    cy.wait("@movieAppSearch").its("request.url").should("contain", "Lord");
     cy.get("p").contains("sökresultat");
   });
 });
