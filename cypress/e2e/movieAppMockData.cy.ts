@@ -1,4 +1,4 @@
-describe("Testing movieApp.ts", () => {
+describe("Testing movieApp with mockdata", () => {
   beforeEach("Should visit the page before each test", () => {
     cy.visit("index.html");
   });
@@ -20,31 +20,30 @@ describe("Testing movieApp.ts", () => {
   });
 
   it("Should search with value", () => {
+    cy.intercept("GET", "http://omdbapi.com/*", { fixture: "movies" }).as(
+      "movieAppSearch"
+    );
     cy.get("input").type("Batman").should("have.value", "Batman");
     cy.get("button").click();
+    cy.wait("@movieAppSearch").its("request.url").should("contain", "Batman");
   });
 
-  it("Should search for movie and create divs", () => {
+  it("Should search for movie and create DIVS", () => {
+    cy.intercept("GET", "http://omdbapi.com/*", { fixture: "movies" }).as(
+      "movieAppSearch"
+    );
     cy.get("input").type("Batman").should("have.value", "Batman");
     cy.get("#search").click();
-    cy.get(".movie").should("have.length", 10);
-    cy.get("h3").should("have.length", 10);
-    cy.get(".movie:first").contains("Batman Begins");
-  });
-
-  it("Should clear the all movies and search for new ones", () => {
-    cy.get("input").type("Batman").should("have.value", "Batman");
-    cy.get("#search").click();
-
-    cy.get("input").clear().type("Star Wars").should("have.value", "Star Wars");
-    cy.get("#search").click();
-    cy.get(".movie").should("have.length", 10);
-    cy.get("h3").should("have.length", 10);
-    cy.get(".movie:first").contains("Star Wars: Episode IV - A New Hope");
+    cy.wait("@movieAppSearch").its("request.url").should("contain", "Batman");
+    //Got 9 movies in my object in fixtures.
+    cy.get(".movie").should("have.length", 9);
   });
 
   it("Should not search for a movie and show noMessage", () => {
-    cy.get("input").type(" ").should("have.value", " ");
+    cy.intercept("GET", "http://omdbapi.com/*", { fixture: "emptyMovies" }).as(
+      "movieAppSearch"
+    );
+    cy.get("input").type("Lörd").should("have.value", "Lörd");
     cy.get("button").click();
     cy.get("p").contains("sökresultat");
   });
