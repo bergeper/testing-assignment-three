@@ -1,8 +1,7 @@
+beforeEach("Should visit the page before each test", () => {
+  cy.visit("/");
+});
 describe("Testing movieApp with mockdata", () => {
-  beforeEach("Should visit the page before each test", () => {
-    cy.visit("index.html");
-  });
-
   it("Should show form", () => {
     cy.get("form").should("have.id", "searchForm");
   });
